@@ -280,7 +280,7 @@ p.subtitle {
 .crossword-board-container {
     overflow: auto;
     display: flex;
-    padding: 20px;
+    padding: 30px;
     background: var(--grid-container-bg);
     border-radius: 12px;
     border: 1px solid var(--color-sage);
@@ -288,29 +288,30 @@ p.subtitle {
 
 #crossword-grid {
     display: grid;
-    gap: 1px;                          /* Bu 1px GAP = çizgi kalınlığı */
-    padding: 1px;                      /* Dış kenar çizgisi için */
-    background: var(--color-sage);     /* Gap'ın rengi = çizgi rengi */
+    gap: 0;
+    padding: 20px;
+    background: transparent;
     margin: auto;
 }
 
 .cell {
     width: 32px;
     height: 32px;
-    /* Boş hücreler grid arka planıyla aynı renk → "siyah kare" görünümü */
-    background-color: var(--grid-container-bg);
+    background-color: transparent;   /* Boş hücreler görünmez */
     position: relative;
     box-sizing: border-box;
 }
 
 .cell.active {
-    background-color: var(--grid-bg);  /* Beyaz */
+    background-color: var(--grid-bg);
     cursor: pointer;
+    /* outline: border gibi çalışır ama box-model'i etkilemez.
+       Komşu hücrelerin outline'ları üst üste biner → her noktada tam 1px çizgi */
+    outline: 1px solid var(--color-sage);
     display: flex;
     justify-content: center;
     align-items: center;
     transition: background-color 0.15s ease;
-    /* Border/shadow YOK — çizgiler tamamen grid gap'ten geliyor */
 }
 
 .input-ghost {
@@ -342,6 +343,8 @@ p.subtitle {
 
 .cell.selected {
     background-color: var(--selected-cell);
+    outline: 2px solid var(--primary-color);
+    z-index: 1;
 }
 
 .cell.highlighted-word {
