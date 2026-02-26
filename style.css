@@ -287,31 +287,36 @@ p.subtitle {
 }
 
 #crossword-grid {
-    display: grid;
-    gap: 0;
-    padding: 20px;
-    background: transparent;
+    /* table içeriği JS tarafından oluşturuluyor */
+    margin: auto;
+}
+
+/* Table: border-collapse GARANTILI 1px çizgi verir — hiçbir tarayıcı farklı render edemez */
+#crossword-table {
+    border-collapse: collapse;
+    border-spacing: 0;
     margin: auto;
 }
 
 .cell {
     width: 32px;
     height: 32px;
+    min-width: 32px;
+    min-height: 32px;
     background-color: transparent;   /* Boş hücreler görünmez */
     position: relative;
+    padding: 0;
     box-sizing: border-box;
 }
 
 .cell.active {
     background-color: var(--grid-bg);
     cursor: pointer;
-    /* Kenarlar JS tarafından komşu-farkında olarak çiziliyor (renderBoard sonu).
-       CSS'te border/outline tanımlamak tarayıcılar arası çift-kenar sorununa yol açar. */
+    border: 1px solid var(--color-sage);   /* border-collapse ile tam 1px garantili */
     display: flex;
     justify-content: center;
     align-items: center;
     transition: background-color 0.15s ease;
-    box-sizing: border-box;
 }
 
 .input-ghost {
@@ -801,6 +806,8 @@ footer#credits {
     .cell {
         width: 38px;
         height: 38px;
+        min-width: 38px;
+        min-height: 38px;
     }
 
     /* iOS zoom engellemek için minimum 16px (kritik!) */

@@ -659,13 +659,18 @@ function renderBoard() {
     const cols = width + 2;
     const rows = height + 2;
 
-    gridElement.style.gridTemplateColumns = `repeat(${cols}, 32px)`;
-    gridElement.style.gridTemplateRows = `repeat(${rows}, 32px)`;
+    // Table yapısı: border-collapse:collapse tam olarak bu sorun için var.
+    // Hiçbir CSS/JS hilesi gerekmez — her iki komşu hücrenin border'ı
+    // otomatik olarak tek bir 1px çizgiye collapse edilir.
+    const table = document.createElement('table');
+    table.id = 'crossword-table';
 
     for (let r = 0; r < rows; r++) {
+        const tr = document.createElement('tr');
+
         for (let c = 0; c < cols; c++) {
-            const cellDiv = document.createElement('div');
-            cellDiv.classList.add('cell');
+            const td = document.createElement('td');
+            td.classList.add('cell');
 
             const gx = minX + c - 1;
             const gy = minY + r - 1;
@@ -673,17 +678,17 @@ function renderBoard() {
             if (gx >= 0 && gy >= 0 && gx < boardState.grid[0].length && gy < boardState.grid.length) {
                 const char = boardState.grid[gy][gx];
                 if (char) {
-                    cellDiv.classList.add('active');
-                    cellDiv.dataset.x = gx;
-                    cellDiv.dataset.y = gy;
-                    cellDiv.dataset.char = char;
+                    td.classList.add('active');
+                    td.dataset.x = gx;
+                    td.dataset.y = gy;
+                    td.dataset.char = char;
 
                     const startNum = boardState.words.find(w => w.x === gx && w.y === gy)?.number;
                     if (startNum) {
                         const numSpan = document.createElement('span');
                         numSpan.classList.add('cell-number');
                         numSpan.innerText = startNum;
-                        cellDiv.appendChild(numSpan);
+                        td.appendChild(numSpan);
                     }
 
                     const input = document.createElement('input');
@@ -695,9 +700,9 @@ function renderBoard() {
                     input.setAttribute('autocapitalize', 'characters');
                     input.setAttribute('spellcheck', 'false');
                     input.setAttribute('inputmode', 'text');
-                    cellDiv.appendChild(input);
+                    td.appendChild(input);
 
-                    boardState.cells[`${gx},${gy}`] = { el: cellDiv, input };
+                    boardState.cells[`${gx},${gy}`] = { el: td, input };
 
                     input.addEventListener('focus', () => {
                         handleCellFocus(gx, gy);
@@ -716,37 +721,12 @@ function renderBoard() {
                     input.addEventListener('click', (e) => handleCellClick(e, gx, gy));
                 }
             }
-            gridElement.appendChild(cellDiv);
+            tr.appendChild(td);
         }
+        table.appendChild(tr);
     }
 
-    // --- Komşu-farkında kenar çizimi ---
-    // Her aktif hücre için komşularına bakılır.
-    // Sağ ve alt kenar her zaman çizilir.
-    // Sol kenar yalnızca sol komşu aktif değilse, üst kenar yalnızca üst komşu aktif değilse çizilir.
-    // Böylece iki komşu aktif hücre arasındaki her çizgi TAM OLARAK BİR hücre tarafından çizilir.
-    const BORDER = '1px solid #9CAB84'; // --color-sage
-    for (const key in boardState.cells) {
-        const [x, y] = key.split(',').map(Number);
-        const cell = boardState.cells[key].el;
-
-        const hasTop    = !!(boardState.grid[y - 1] && boardState.grid[y - 1][x]);
-        const hasLeft   = !!(boardState.grid[y][x - 1]);
-        const hasRight  = !!(boardState.grid[y][x + 1]);
-        const hasBottom = !!(boardState.grid[y + 1] && boardState.grid[y + 1][x]);
-
-        cell.style.borderTop    = hasTop    ? 'none' : BORDER;
-        cell.style.borderLeft   = hasLeft   ? 'none' : BORDER;
-        cell.style.borderRight  = BORDER;   // her zaman çiz
-        cell.style.borderBottom = BORDER;   // her zaman çiz
-
-        // Sağda veya altta komşu varsa, o komşu zaten sol/üst kenarı çizmeyecek.
-        // Sağda komşu yoksa bizim sağ kenarımız dış sınır.
-        // Altta komşu yoksa bizim alt kenarımız dış sınır.
-        // → Her çizgi tam bir kez çizilir, hiçbir yerde 2px oluşmaz.
-        if (hasRight)  cell.style.borderRight  = BORDER; // komşu sol kenarını çizmez, biz çizeriz
-        if (hasBottom) cell.style.borderBottom = BORDER; // komşu üst kenarını çizmez, biz çizeriz
-    }
+    gridElement.appendChild(table);
 }
 
 function renderClues() {
