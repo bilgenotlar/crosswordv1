@@ -312,11 +312,12 @@ p.subtitle {
 .cell.active {
     background-color: var(--grid-bg);
     cursor: pointer;
-    border: 1px solid var(--color-sage);   /* border-collapse ile tam 1px garantili */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    border: 1px solid var(--color-sage);
+    /* display:flex td üzerinde border-collapse'ı kırar — kullanma */
+    text-align: center;
+    vertical-align: middle;
     transition: background-color 0.15s ease;
+    position: relative;
 }
 
 .input-ghost {
@@ -326,14 +327,20 @@ p.subtitle {
     color: var(--text-color);
     border: none;
     background: transparent;
+    /* Hücreyi tamamen kapla — flex olmadan absolute ile */
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     text-align: center;
+    /* Dikey ortalama için line-height */
+    line-height: 32px;
     text-transform: uppercase;
     outline: none;
     padding: 0;
     margin: 0;
-    padding-bottom: 2px;
+    box-sizing: border-box;
 }
 
 /* Incorrect letter styling - red color */
@@ -810,9 +817,9 @@ footer#credits {
         min-height: 38px;
     }
 
-    /* iOS zoom engellemek için minimum 16px (kritik!) */
     .input-ghost {
-        font-size: 16px;
+        font-size: 16px;   /* iOS zoom engellemek için minimum 16px (kritik!) */
+        line-height: 38px; /* Mobil hücre yüksekliğiyle eşleşmeli */
     }
 
     .cell-number {
