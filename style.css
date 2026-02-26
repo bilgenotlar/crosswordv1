@@ -305,13 +305,13 @@ p.subtitle {
 .cell.active {
     background-color: var(--grid-bg);
     cursor: pointer;
-    /* outline: border gibi çalışır ama box-model'i etkilemez.
-       Komşu hücrelerin outline'ları üst üste biner → her noktada tam 1px çizgi */
-    outline: 1px solid var(--color-sage);
+    /* Kenarlar JS tarafından komşu-farkında olarak çiziliyor (renderBoard sonu).
+       CSS'te border/outline tanımlamak tarayıcılar arası çift-kenar sorununa yol açar. */
     display: flex;
     justify-content: center;
     align-items: center;
     transition: background-color 0.15s ease;
+    box-sizing: border-box;
 }
 
 .input-ghost {
@@ -343,7 +343,9 @@ p.subtitle {
 
 .cell.selected {
     background-color: var(--selected-cell);
+    /* Seçili hücreyi vurgulamak için JS tarafından atanan border'ın üzerine outline ekle */
     outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
     z-index: 1;
 }
 
