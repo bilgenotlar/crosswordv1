@@ -307,11 +307,13 @@ p.subtitle {
 .cell.active {
     background-color: var(--grid-bg);
     cursor: pointer;
-    border: 1px solid var(--color-sage);
+    /* box-shadow yerine border kullanmak bitişik hücrelerde çift kenarlık oluşturur.
+       box-shadow layout'u etkilemez, komşu hücrelerle çakışmaz → kesişim noktaları temiz görünür. */
+    box-shadow: 0 0 0 1px var(--color-sage);
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .input-ghost {
@@ -339,12 +341,14 @@ p.subtitle {
 
 .cell.active:hover {
     background-color: #fcfcfc;
-    border-color: var(--primary-color);
+    box-shadow: 0 0 0 1px var(--primary-color);
 }
 
 .cell.selected {
     background-color: var(--selected-cell);
-    border-color: var(--primary-color);
+    /* Seçili hücrede daha belirgin çerçeve */
+    box-shadow: 0 0 0 2px var(--primary-color);
+    z-index: 1;
 }
 
 .cell.highlighted-word {
