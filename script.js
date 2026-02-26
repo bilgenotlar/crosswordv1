@@ -690,6 +690,12 @@ function renderBoard() {
                     input.classList.add('input-ghost');
                     input.maxLength = 1;
                     input.style.caretColor = 'transparent';
+                    // Mobil iyileştirmeleri: iOS zoom engeli (font-size >= 16px ile birlikte)
+                    input.setAttribute('autocomplete', 'off');
+                    input.setAttribute('autocorrect', 'off');
+                    input.setAttribute('autocapitalize', 'characters');
+                    input.setAttribute('spellcheck', 'false');
+                    input.setAttribute('inputmode', 'text');
                     cellDiv.appendChild(input);
 
                     boardState.cells[`${gx},${gy}`] = { el: cellDiv, input };
